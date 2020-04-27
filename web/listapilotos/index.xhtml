@@ -1,0 +1,290 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>Facelet Title</title>
+        <style type="text/css">
+            .ui-diagram-element {   
+                width:8em; 
+                height:3em;     
+                line-height:3em;
+                text-align: center;
+                box-shadow: 0 5px 10px rgba(0, 0, 0, 0.8);
+                border-radius: 4px;
+                border: 1px solid transparent;
+                background-color: #33AFFF;
+                color: #ffffff;
+            }
+
+            .ui-diagram-success {
+                background-color: #9CB071;
+                color: #ffffff;
+                border-color: #7ab02c;
+            }
+
+            .ui-diagram-fail {
+                background-color: #C34A2C;
+                color: #ffffff;
+            }
+
+            .flow-label {
+                font-size: 24px;
+                font-weight: bold;
+                color: #816A51;
+            }
+        </style>
+    </h:head>
+    <h:body>
+        <p:growl id="grwlErrores"/>
+        <h:form id="frmPiloto">
+            <p:commandButton value="Volver" action="inicio" />
+            <p:panel header="CARRERA DE MOTOGP - Total Pilotos #{sesionPiloto.listaPiloto.contarNodos()}">
+                <p:panelGrid columns="3">
+                    <p:panel header="informacion del piloto">
+
+                        <p:panelGrid columns="2">
+                            <p:outputLabel for="txtNombre" value="Nombre del piloto"/>
+                            <p:inputText id="txtNombre" required="true" disabled="#{sesionPiloto.deshabilitarFormulario}"
+                                         value="#{sesionPiloto.piloto.nombre}"   />
+                            
+                            <p:outputLabel for="spEdad" value="Edad del piloto"/>
+                            <p:spinner id="spEdad" required="true" min="18" max="40" disabled="#{sesionPiloto.deshabilitarFormulario}"
+                                       value="#{sesionPiloto.piloto.edad}"/>
+                            
+                            <p:outputLabel value="Género del piloto"/>
+                            <p:selectOneMenu value="#{sesionPiloto.piloto.genero}"
+                                             disabled="#{sesionPiloto.deshabilitarFormulario}">
+                                <f:selectItem itemLabel="Hombre" itemValue="true"/>
+                                <f:selectItem itemLabel="Mujer" itemValue="false"/>
+                            </p:selectOneMenu>
+                            
+
+                            <p:outputLabel value="Departamento del piloto"/>
+                            <p:selectOneMenu value="#{sesionPiloto.codigoDeptoSel}" disabled="#{sesionPiloto.deshabilitarFormulario}" >
+                                <f:selectItems value="#{sesionPiloto.controlLocalidades.departamentos}" 
+                                               var="depto" itemLabel="#{depto.nombre}" itemValue="#{depto.codigo}"
+                                               />
+                                <p:ajax event="change" update="cmbCiudad" process="cmbCiudad" />
+                            </p:selectOneMenu>
+
+                            <p:outputLabel value="Ciudad del piloto"/>
+                            <p:selectOneMenu id="cmbCiudad" value="#{sesionPiloto.piloto.ciudadNacimiento}" disabled="#{sesionPiloto.deshabilitarFormulario}"  >
+                                <f:selectItems value="#{sesionPiloto.controlLocalidades.obtenerCiudadesxDepto(sesionPiloto.codigoDeptoSel)}" 
+                                               var="ciudad" itemLabel="#{ciudad.nombre}" itemValue="#{ciudad.nombre}"
+                                               />
+                            </p:selectOneMenu>
+
+
+                            <p:outputLabel value="el piloto iniciara de primero"/>
+                            <p:selectOneMenu value="#{sesionPiloto.alInicio}" disabled="#{sesionPiloto.deshabilitarFormulario}">
+                                <f:selectItem itemLabel="SI" itemValue="1"/>
+                                <f:selectItem itemLabel="NO" itemValue="0"/>
+                            </p:selectOneMenu>
+                        </p:panelGrid>
+                        <p:commandButton value="Guardar Piloto" update="frmPiloto,:grwlErrores"
+                                         action="#{sesionPiloto.guardarPiloto()}" disabled="#{sesionPiloto.deshabilitarFormulario}"/>
+
+                        <p:commandButton value="Nuevo Piloto" update="frmPiloto" action="#{sesionPiloto.habilitarFormulario()}"
+                                         disabled="#{!sesionPiloto.deshabilitarFormulario}"
+                                         />
+                        <p:commandButton value="Invertir la posicion de los pilotos"  update="frmPiloto,:grwlErrores"
+                                         action="#{sesionPiloto.invertirLista()}"
+                                         />
+                        <p:panelGrid columns="4">
+                            <p:commandButton value="Primero" action="#{sesionPiloto.irPrimero()}" 
+                                             update="frmPiloto"/>
+                            <p:commandButton value="Anterior" action="#{sesionPiloto.irAnterior()}"
+                                             update="frmPiloto"/>
+                            <p:commandButton value="Siguiente" action="#{sesionPiloto.irSiguiente()}"
+                                             update="frmPiloto"/>       
+                            <p:commandButton value="Último" action="#{sesionPiloto.irUltimo()}" 
+                                             update="frmPiloto"/>                           
+
+                        </p:panelGrid>
+                        <p:outputLabel value="Código del piloto a eliminar: "/>
+                        <p:inputText value="#{sesionPiloto.codigoEliminar}" maxlength="4" size="10"/>
+                        <p:commandButton value="Eliminar" action="#{sesionPiloto.eliminarPiloto()}" 
+                                         update="frmPiloto,:grwlErrores"
+                                         />
+                    
+                    </p:panel>
+                    <p:panel header="Reporte de la carrera"> 
+                        
+                        <p:outputLabel value="Cantidad de pilotos registrados: #{sesionPiloto.listaPiloto.contarNodos()}"/>
+                        
+                        <h:panelGrid columns="2">
+                            <p:outputLabel value="Cantidad Pilotos Hombres: "/>
+                            <p:outputLabel value="#{sesionPiloto.listaPiloto.contarPilotosxGenero(true)}"/>               
+                            <p:outputLabel value="Cantidad Pilotos Mujeres: "/>
+                            <p:outputLabel value="#{sesionPiloto.listaPiloto.contarPilotosxGenero(false)}"/>
+                 
+                        </h:panelGrid>
+                         
+                        <p:panel header="Lista de los pilotos que se han inscrito">
+                        <br/>
+                        <p:outputLabel value="Nombre de los pilotos:  #{sesionPiloto.listaPiloto.obtenerListadoPilotos()} "/>
+                        <br/>
+       
+                        
+                        </p:panel>
+                    </p:panel>
+                     
+                    
+
+
+                </p:panelGrid>
+
+                <p:panel header="Gráfico " id="pnlVista" style="width: 100%;">
+                    <p:commandButton value="#{sesionPiloto.textoVista}" 
+                                     action="#{sesionPiloto.cambiarVistaPiloto()}"
+                                     update="pnlVista"/>
+
+                    <p:dataTable rendered="#{sesionPiloto.textoVista=='Gráfico'}"  value="#{sesionPiloto.listadoPilotos}" var="inf">
+                        <p:column>
+                            <f:facet name="header">
+                                <p:outputLabel value="Código"/>
+                            </f:facet>
+                            <p:outputLabel value="#{inf.codigo}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <p:outputLabel value="Nombre"/>
+                            </f:facet>
+                            <p:outputLabel value="#{inf.nombre}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <p:outputLabel value="Edad"/>
+                            </f:facet>
+                            <p:outputLabel value="#{inf.edad}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <p:outputLabel value="Género"/>
+                            </f:facet>
+                            <p:outputLabel rendered="#{inf.genero}"  value="Hombre"/>
+                            <p:outputLabel rendered="#{!inf.genero}"  value="Mujer"/>                                
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <p:outputLabel value="Ciudad nacimiento"/>
+                            </f:facet>
+                            <p:outputLabel value="#{inf.ciudadNacimiento}"/>
+                        </p:column>
+                    </p:dataTable>
+
+                    <p:diagram id="diagrama" rendered="#{sesionPiloto.textoVista=='Tabla'}" value="#{sesionPiloto.model}" style="height:600px; width: 100%;" styleClass="ui-widget-content" />
+
+                    <p:remoteCommand name="elementClickRight" 
+                                     actionListener="#{sesionPiloto.onClickRight()}" 
+                                     >
+                    </p:remoteCommand>
+
+                    <script>
+                        $(document).ready(function () {
+                            $('.ui-diagram > .ui-diagram-element').mousedown(function (info) {
+                                if (info.which === 3) {
+                                    elementClickRight([{
+                                            name: 'elementId',
+                                            value: info.target.id
+                                        }]);
+                                }
+                            });
+                        });
+                    </script>
+
+                    <p:contextMenu id="mnuDiagrama" for="diagrama"
+                                   targetFilter=".ui-diagram-element"
+                                   >
+                        <p:menuitem value="Ver datos" 
+                                    action="#{sesionPiloto.obtenerPilotoDiagrama()}" 
+                                    update="panelPiloto"                                    
+                                    oncomplete="PF('dlgDatosPiloto').show();" />
+                       
+                        <p:menuitem value="Eliminar" update="panelEliminarCorredor" 
+                                    action="#{sesionPiloto.obtenerPilotoDiagrama()}" 
+                                    oncomplete="PF('dlgEliminarCorredor').show();" />                                   
+                                  
+                        <p:menuitem value="Enviar al inicio" update="pnlVista"                                    
+                                    action="#{sesionPiloto.enviarAlInicio()}" />
+                        
+                        <p:menuitem value="Enviar al final" update="pnlVista"                                    
+                                    action="#{sesionPiloto.enviarAlFinal()}"/>
+                                                           
+                                    
+                        <p:menuitem value="Adelantar/Perder Posición"
+                        update="panelposicionPiloto" 
+                                    action="#{sesionPiloto.obtenerPilotoDiagrama()}" 
+                                    oncomplete="PF('dlgposicionPiloto').show();" />  
+                    </p:contextMenu>
+                </p:panel>
+            </p:panel>
+            
+            
+           
+            
+            
+            
+            <p:dialog id="modalPiloto" header="Datos piloto" widgetVar="dlgDatosPiloto" 
+                      modal="true" height="100">
+                <p:panel id="panelPiloto">
+                    <h:panelGrid columns="2">
+                        <h:outputText value="Código:" />
+                        <h:outputText value="#{sesionPiloto.pilotoDiagrama.codigo}" />
+                        <h:outputText value="Nombre:" />
+                        <h:outputText value="#{sesionPiloto.pilotoDiagrama.nombre}" />
+                        <h:outputText value="Género:" />
+                        <h:outputText rendered="#{sesionPiloto.pilotoDiagrama.genero}" value="Masculino" />
+                        <h:outputText rendered="#{!sesionPiloto.pilotoDiagrama.genero}" value="Femenino" />
+                    </h:panelGrid>
+                    
+                </p:panel>
+            </p:dialog> 
+            
+            
+             <p:dialog id="modalEliminarCorredor" header="Eliminar Corredor" widgetVar="dlgEliminarCorredor" 
+                      modal="true" height="100">
+                <p:panel id="panelEliminarCorredor">
+                    <h:panelGrid columns="2">
+                        <h:outputText value="Código:" />
+                        <h:outputText value="#{sesionPiloto.pilotoDiagrama.codigo}" />
+                        <h:outputText value="Nombre:" />
+                        <h:outputText value="#{sesionPiloto.pilotoDiagrama.nombre}" />
+                        <h:outputText value="Género:" />
+                        <h:outputText rendered="#{sesionPiloto.pilotoDiagrama.genero}" value="Masculino" />
+                        <h:outputText rendered="#{!sesionPiloto.pilotoDiagrama.genero}" value="Femenino" />
+                    </h:panelGrid>
+                    <p:commandButton value="Aceptar" action="#{sesionPiloto.elimPiloto()}"
+                                     onclick="PF('dlgEliminarCorredor').hid();"  update="pnlVista"/>
+                    
+                    <p:commandButton value="Cancelar" onclick="PF('dlgEliminarCorredor').hid();"/>
+                </p:panel>
+            </p:dialog> 
+            
+             <p:dialog id="modalavanzarretrocederPiloto" header="avanzar/perder posicion piloto" widgetVar="dlgposicionPiloto" 
+                      modal="true" height="100">
+                <p:panel id="panelposicionPiloto">
+                    <h:panelGrid columns="2">
+                        <h:outputText value="Código:" />
+                        <h:outputText value="#{sesionPiloto.pilotoDiagrama.codigo}" />
+                        <h:outputText value="Nombre:" />
+                        <h:outputText value="#{sesionPiloto.pilotoDiagrama.nombre}" />
+                        <h:outputText value="Género:" />
+                        <h:outputText rendered="#{sesionPiloto.pilotoDiagrama.genero}" value="Masculino" />
+                        <h:outputText rendered="#{!sesionPiloto.pilotoDiagrama.genero}" value="Femenino" />
+                    </h:panelGrid>
+                    <p:commandButton value="adelantar posicion" action="#{sesionPiloto}"/>
+                    <p:commandButton value="perder posicion" action="#{sesionPiloto}"/>
+                    <p:commandButton value="cancelar" onclick="PF('dlgEliminarCorredor').hid();"/>
+                </p:panel>
+            </p:dialog> 
+            
+        </h:form>
+
+    </h:body>
+</html>
+
+
