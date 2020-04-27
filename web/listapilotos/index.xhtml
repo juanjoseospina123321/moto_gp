@@ -120,6 +120,7 @@
                             <p:outputLabel value="#{sesionPiloto.listaPiloto.contarPilotosxGenero(true)}"/>               
                             <p:outputLabel value="Cantidad Pilotos Mujeres: "/>
                             <p:outputLabel value="#{sesionPiloto.listaPiloto.contarPilotosxGenero(false)}"/>
+                            <p:outputLabel value="el promedio de la edad de los pilotos es de:  #{sesionPiloto.listaPiloto.promediarEdades()}"/>
                  
                         </h:panelGrid>
                          
@@ -236,6 +237,8 @@
                         <h:outputText value="#{sesionPiloto.pilotoDiagrama.codigo}" />
                         <h:outputText value="Nombre:" />
                         <h:outputText value="#{sesionPiloto.pilotoDiagrama.nombre}" />
+                         <h:outputText value="Edad" />
+                         <h:outputText value="#{sesionPiloto.pilotoDiagrama.edad}" />
                         <h:outputText value="Género:" />
                         <h:outputText rendered="#{sesionPiloto.pilotoDiagrama.genero}" value="Masculino" />
                         <h:outputText rendered="#{!sesionPiloto.pilotoDiagrama.genero}" value="Femenino" />
