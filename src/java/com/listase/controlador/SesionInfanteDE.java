@@ -6,6 +6,7 @@
 package com.listase.controlador;
 
 import com.listase.excepciones.InfanteExcepcion;
+import com.listase.excepciones.PilotoExcepcion;
 import com.listase.modelo.Infante;
 import com.listase.modelo.ListaDE;
 import com.listase.modelo.ListaSE;
@@ -228,6 +229,15 @@ public class SesionInfanteDE implements Serializable {
         deshabilitarFormulario=true;
         JsfUtil.addSuccessMessage("El Piloto se ha inscrito satisfactoriamente");
         
+    }
+    public void elimInfante()
+    {
+        try {
+            listaInfantes.eliminarInfante(infanteSeleccionado);
+            irPrimero();
+        } catch (InfanteExcepcion ex) {
+             JsfUtil.addErrorMessage(ex.getMessage());
+        }
     }
     
     public void habilitarFormulario()

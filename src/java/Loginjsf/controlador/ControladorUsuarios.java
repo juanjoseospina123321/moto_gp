@@ -10,10 +10,6 @@ import Loginjsf.modelo.Usuario;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- *
- * @author Juan Jose Ospina B
- */
 public class ControladorUsuarios {
 
     private List<TipoUsuario> tiposUsuarios;
@@ -42,14 +38,13 @@ public class ControladorUsuarios {
     private void iniciarListados() {
         tiposUsuarios = new ArrayList<>();
         tiposUsuarios.add(new TipoUsuario(1, "administrador"));
-        tiposUsuarios.add(new TipoUsuario(2, "consulta"));
+        
 
         usuarios = new ArrayList<>();
         usuarios.add(new Usuario("motogp.com", "moto123", "juan jose",
                 tiposUsuarios.get(0)));
 
-        usuarios.add(new Usuario("consulta.com", "consulta123", "consulta",
-                tiposUsuarios.get(1)));
+      
     }
 
     public Usuario encontrarUsuarioxCorreo(String correo) {
