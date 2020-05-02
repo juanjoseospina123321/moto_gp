@@ -90,6 +90,12 @@
                         <p:commandButton value="Invertir"  update="frmInfante,:grwlErrores"
                                          action="#{sesionInfanteDE.invertirLista()}"
                                          />
+                        
+                        <p:commandButton value="buscar infante de menor edad"/>
+                        <p:outputLabel value="#{sesionInfanteDE}" />
+                        
+                        
+                        
                         <p:panelGrid columns="4">
                             <p:commandButton value="Primero" action="#{sesionInfanteDE.irPrimero()}" 
                                              update="frmInfante"/>
@@ -184,25 +190,50 @@
 
                     <p:contextMenu id="mnuDiagrama" for="diagrama"
                                    targetFilter=".ui-diagram-element">
-                        
+
                         <p:menuitem value="Ver datos" 
                                     action="#{sesionInfanteDE.obtenerInfanteDiagrama()}" 
                                     update="panelInfante"                                    
                                     oncomplete="PF('dlgDatosInfante').show();" />
-                        
+
                         <p:menuitem value="eliminar infantes" 
                                     action="#{sesionInfanteDE.obtenerInfanteDiagrama()}" 
                                     update="panelEliminarInfante"                                    
                                     oncomplete="PF('dlgEliminarInfante').show();" />
-                        
+
                         <p:menuitem value="Enviar al final" update="pnlVista"                                    
                                     action="#{sesionInfanteDE.enviarAlFinal()}"/>
                         <p:menuitem value="Enviar al inicio" update="pnlVista"                                    
                                     action="#{sesionInfanteDE.enviarAlInicio()}"/>
-                        <p:menuitem value="Adelantar/Perder Posición"/>
+                        <p:menuitem value="Adelantar/Perder Posición"
+                                    update="panelposicion" 
+                                    action="#{sesionInfanteDE.obtenerInfanteDiagrama()}" 
+                                    oncomplete="PF('dlgposicion').show();" /> 
+
                     </p:contextMenu>
                 </p:panel>
+
             </p:panel>
+
+
+            <p:dialog id="modalavanzarretroceder" header="avanzar/perder posicion piloto" widgetVar="dlgposicion" 
+                      modal="true" height="100">
+                <p:panel id="panelposicion">
+                    <h:panelGrid columns="2">
+                        <h:outputText value="Código:" />
+                        <h:outputText value="#{sesionInfanteDE.infanteDiagrama.codigo}" />
+                        <h:outputText value="Nombre:" />
+                        <h:outputText value="#{sesionInfanteDE.infanteDiagrama.nombre}" />
+                        <h:outputText value="Género:" />
+                        <h:outputText rendered="#{sesionInfanteDE.infanteDiagrama.genero}" value="Masculino" />
+                        <h:outputText rendered="#{!sesionInfanteDE.infanteDiagrama.genero}" value="Femenino" />
+                    </h:panelGrid>
+                    <p:commandButton value="adelantar posicion" action="#{sesionInfanteDE}"/>
+                    <p:commandButton value="perder posicion" action="#{sesionInfanteDE}"/>
+                    <p:commandButton value="cancelar" onclick="PF('dlgEliminarCorredor').hid();"/>
+                </p:panel>
+            </p:dialog> 
+
             <p:dialog id="modalEliminarInfante" header="Eliminar Infante" widgetVar="dlgEliminarInfante" 
                       modal="true" height="100">
                 <p:panel id="panelEliminarInfante">
@@ -217,11 +248,11 @@
                     </h:panelGrid>
                     <p:commandButton value="Aceptar" action="#{sesionInfanteDE.elimInfante()}"
                                      onclick="PF('dlgEliminarCorredor').hid();"  update="pnlVista"/>
-                    
+
                     <p:commandButton value="Cancelar" onclick="PF('dlgEliminarCorredor').hid();"/>
                 </p:panel>
             </p:dialog>
-            
+
             <p:dialog id="modalInfante" header="Datos Infante" widgetVar="dlgDatosInfante" 
                       modal="true" height="100">
                 <p:panel id="panelInfante">
@@ -234,15 +265,20 @@
                         <h:outputText rendered="#{sesionInfanteDE.infanteDiagrama.genero}" value="Masculino" />
                         <h:outputText rendered="#{!sesionInfanteDE.infanteDiagrama.genero}" value="Femenino" />
                     </h:panelGrid>
-                    
+
                 </p:panel>
-                
-                  
-                
+
+
+
             </p:dialog> 
+
+
         </h:form>
 
     </h:body>
 </html>
+
+
+
 
 

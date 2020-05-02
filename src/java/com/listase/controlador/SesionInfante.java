@@ -9,6 +9,7 @@ import com.listase.excepciones.InfanteExcepcion;
 import com.listase.modelo.Infante;
 import com.listase.modelo.ListaSE;
 import com.listase.modelo.Nodo;
+import com.listase.modelo.NodoDE;
 import com.listase.utilidades.JsfUtil;
 import javax.inject.Named;
 import javax.enterprise.context.SessionScoped;
@@ -417,6 +418,51 @@ public class SesionInfante implements Serializable {
             JsfUtil.addErrorMessage(ex.getMessage());
         }
     }
+    
+    
+    
+    
+    
+    
+    public void adelantar(NodoDE temp, int posAde)
+    {
+        int cont=0;
+        NodoDE tempA=temp;
+        
+        while((cont<posAde) && (tempA!=null))
+        {
+            tempA=temp;
+            cont++;
+        }
+        
+        if(tempA!=null)
+        {
+        tempA=temp.getSiguiente();
+        cont=0;
+        
+        NodoDE tempIn= new NodoDE(infante);
+        
+        while(cont<posAde)
+        {
+            tempIn.setDato(tempA.getDato());
+            tempA.setDato(temp.getDato());
+            temp.setDato(tempIn.getDato());
+            tempA=tempA.getSiguiente();
+            cont++;
+            
+            
+            
+        }
+        
+        
+        }
+        
+        
+        
+    }
+    
+    
+    
     
     
     

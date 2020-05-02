@@ -40,7 +40,7 @@
     <h:body>
         <p:growl id="grwlErrores"/>
         <h:form id="frmInfante">
-            <p:commandButton value="Volver" action="inicio" />
+            <p:commandButton value="salir" action="inicio" />
             <p:panel header="Lista Simplemente Enlazada Infantes - Total Infantes #{sesionInfante.listaInfantes.contarNodos()}">
                 <p:panelGrid columns="2">
                     <p:panel header="Datos Infante">
@@ -104,6 +104,7 @@
                         <p:commandButton value="Eliminar" action="#{sesionInfante.eliminarInfante()}" 
                                          update="frmInfante,:grwlErrores"
                                          />
+                        
                     </p:panel>
                     <p:panel header="Reportes">
                         <p:outputLabel value="Promedio de Edad de los infantes: #{sesionInfante.listaInfantes.promediarEdades()}"/>
@@ -120,7 +121,9 @@
 
 
                 </p:panelGrid>
-
+<p:commandButton value="buscar infante de menor edad"/>
+<p:outputLabel value="#{sesionInfante}" />
+                
                 <p:panel header="Gráfico" id="pnlVista" style="width: 100%;">
                     <p:commandButton value="#{sesionInfante.textoVista}" 
                                      action="#{sesionInfante.cambiarVistaInfantes()}"
@@ -197,10 +200,35 @@
                                     action="#{sesionInfante.enviarAlFinal()}"/>
                         <p:menuitem value="Enviar al inicio" update="pnlVista"                                    
                                     action="#{sesionInfante.enviarAlInicio()}"/>
-                        <p:menuitem value="Adelantar/Perder Posición"/>
+                        <p:menuitem value="Adelantar/Perder Posición"
+                                    update="panelposInfante" 
+                                    action="#{sesionInfanteDE.obtenerInfanteDiagrama()}" 
+                                    oncomplete="PF('dlgposInfante').show();" /> 
+                        
                     </p:contextMenu>
                 </p:panel>
             </p:panel>
+            
+            <p:dialog id="modalInfante" header="posicion Infante" widgetVar="dlgposInfante" 
+                      modal="true" height="100">
+                <p:panel id="panelposInfante">
+                    <h:panelGrid columns="2">
+                        <h:outputText value="Código:" />
+                        <h:outputText value="#{sesionInfante.infanteDiagrama.codigo}" />
+                        <h:outputText value="Nombre:" />
+                        <h:outputText value="#{sesionInfante.infanteDiagrama.nombre}" />
+                        <h:outputText value="Género:" />
+                        <h:outputText rendered="#{sesionInfante.infanteDiagrama.genero}" value="Masculino" />
+                        <h:outputText rendered="#{!sesionInfante.infanteDiagrama.genero}" value="Femenino" />
+                    </h:panelGrid>
+                    <p:commandButton value="Aceptar" action="#{sesionInfante.elimInfante()}"
+                                     onclick="PF('dlgEliminarCorredor').hid();"  update="pnlVista"/>
+                    
+                    <p:commandButton value="Cancelar" onclick="PF('dlgEliminarCorredor').hid();"/>
+                </p:panel>
+            </p:dialog>
+            
+            
             
             <p:dialog id="modalEliminarInfante" header="Eliminar Infante" widgetVar="dlgEliminarInfante" 
                       modal="true" height="100">
@@ -242,5 +270,3 @@
 
     </h:body>
 </html>
-
-

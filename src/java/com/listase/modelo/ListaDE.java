@@ -48,6 +48,21 @@ public class ListaDE implements Serializable{
             
         }        
     }
+       public NodoDE retornarPosicion(int pos) {
+        NodoDE temp = null;
+        if (!esVacio()) {//noesvacio
+            temp = this.cabeza;
+            for (int i = 0; i < pos; i++) {
+                temp = temp.getSiguiente();
+            }
+        }
+        return temp;
+    }
+       
+       
+     public boolean esVacio() {
+        return (contarNodos() == 0);
+    }
     
     public void adicionarNodoAlInicio(Infante infante)
     {
@@ -83,6 +98,24 @@ public class ListaDE implements Serializable{
             return cont;
         }
     }
+      public NodoDE buscar(short referencia){
+              NodoDE aux = this.cabeza;
+        // Bandera para indicar si el valor existe.
+        boolean encontrado = false;
+        // Recorre la lista hasta encontrar el elemento o hasta 
+        // llegar al final de la lista.
+        while (aux != null && encontrado != true) {
+            // Consulta si el valor del nodo es igual al de referencia.
+            if ((aux.getDato().getCodigo()==referencia)) {
+                // Canbia el valor de la bandera.
+                encontrado = true;
+            } else {
+                // Avansa al siguiente. nodo.
+                aux = aux.getSiguiente();
+            }
+        }
+       return aux;
+      }
     
     public String obtenerListadoInfantes()
     {

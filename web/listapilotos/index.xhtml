@@ -40,7 +40,7 @@
     <h:body>
         <p:growl id="grwlErrores"/>
         <h:form id="frmPiloto">
-            <p:commandButton value="Volver" action="inicio" />
+            <p:commandButton value="salir" action="inicio" />
             <p:panel header="CARRERA DE MOTOGP - Total Pilotos #{sesionPiloto.listaPiloto.contarNodos()}">
                 <p:panelGrid columns="3">
                     <p:panel header="informacion del piloto">
@@ -104,11 +104,17 @@
                                              update="frmPiloto"/>                           
 
                         </p:panelGrid>
+                        
                         <p:outputLabel value="Código del piloto a eliminar: "/>
                         <p:inputText value="#{sesionPiloto.codigoEliminar}" maxlength="4" size="10"/>
                         <p:commandButton value="Eliminar" action="#{sesionPiloto.eliminarPiloto()}" 
                                          update="frmPiloto,:grwlErrores"
                                          />
+                        
+                        <p:commandButton value="buscar infante de menor edad"/>
+                        <p:outputLabel value="#{sesionPiloto}" />
+                        
+                        
                     
                     </p:panel>
                     <p:panel header="Reporte de la carrera"> 
@@ -289,5 +295,4 @@
 
     </h:body>
 </html>
-
 
