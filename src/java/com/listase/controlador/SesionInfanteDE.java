@@ -19,6 +19,7 @@ import java.io.Serializable;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.faces.context.FacesContext;
+import javax.swing.JOptionPane;
 import org.primefaces.model.diagram.Connection;
 import org.primefaces.model.diagram.DefaultDiagramModel;
 import org.primefaces.model.diagram.DiagramModel;
@@ -50,7 +51,8 @@ public class SesionInfanteDE implements Serializable {
     private DefaultDiagramModel model;
 
     private short codigoEliminar;
-
+    private short codigoBuscar;
+    private int pos;
     private ControladorLocalidades controlLocalidades;
 
     private String codigoDeptoSel;
@@ -73,19 +75,44 @@ public class SesionInfanteDE implements Serializable {
 
         listaInfantes = new ListaDE();
         //LLenado de la bds
-        listaInfantes.adicionarNodo(new Infante("Carlitos", (short) 1, (byte) 2, true,
+        listaInfantes.adicionarNodo(new Infante("Carlitos", (short) 1, (byte) 1, true,
                 controlLocalidades.getCiudades().get(0).getNombre()));
-        listaInfantes.adicionarNodo(new Infante("Juanita", (short) 2, (byte) 3, false,
+        listaInfantes.adicionarNodo(new Infante("Juanita", (short) 2, (byte) 2, false,
                 controlLocalidades.getCiudades().get(3).getNombre()));
-        listaInfantes.adicionarNodo(new Infante("Martina", (short) 3, (byte) 1, false,
+        listaInfantes.adicionarNodo(new Infante("Martina", (short) 3, (byte) 3, false,
                 controlLocalidades.getCiudades().get(1).getNombre()));
-        listaInfantes.adicionarNodoAlInicio(new Infante("Mariana", (short) 4, (byte) 5, false,
+        listaInfantes.adicionarNodoAlInicio(new Infante("Mariana", (short) 4, (byte) 4, false,
                 controlLocalidades.getCiudades().get(2).getNombre()));
         ayudante = listaInfantes.getCabeza();
         infante = ayudante.getDato();
         //Me llena el objeto List para la tabla
         listadoInfantes = listaInfantes.obtenerListaInfantes();
         pintarLista();
+    }
+
+    public SesionInfanteDE(int pos) {
+        this.pos = pos;
+    }
+
+    public int getPos() {
+        return pos;
+    }
+
+    public void setPos(int pos) {
+        this.pos = pos;
+    }
+      
+    
+    public SesionInfanteDE(short codigoBuscar) {
+        this.codigoBuscar = codigoBuscar;
+    }
+
+    public short getCodigoBuscar() {
+        return codigoBuscar;
+    }
+
+    public void setCodigoBuscar(short codigoBuscar) {
+        this.codigoBuscar = codigoBuscar;
     }
 
     public Infante getInfanteDiagrama() {
@@ -206,6 +233,8 @@ public class SesionInfanteDE implements Serializable {
         JsfUtil.addSuccessMessage("El Piloto se ha inscrito satisfactoriamente");
 
     }
+     
+
 
     public void elimInfante() {
         try {
@@ -215,9 +244,39 @@ public class SesionInfanteDE implements Serializable {
             JsfUtil.addErrorMessage(ex.getMessage());
         }
     }
-   
+public void guardarInfantePos() {
+        //obtiene el consecutivo
+        infante.setCodigo((short) (listaInfantes.contarNodos() + 1));
+        if (alInicio.compareTo("1") == 0) {
+            listaInfantes.insertarPos(pos,infante);
+        } else {
+            listaInfantes.adicionarNodo(infante);
+        }
+        //Vuelvo a llenar la lista para la tabla
+        listadoInfantes = listaInfantes.obtenerListaInfantes();
+        pintarLista();
+        deshabilitarFormulario = true;
+        JsfUtil.addSuccessMessage("El Piloto se ha inscrito satisfactoriamente");
 
-        
+    }
+    public void buscarInfante() {
+
+        Infante temp = listaInfantes.BuscarInfante(codigoBuscar);
+        if (temp == null) {
+            JsfUtil.addErrorMessage("no existe el infante");
+        } else {
+            JsfUtil.addSuccessMessage("La posición del infante es " + listaInfantes.BuscarInfantePos(codigoBuscar)
+            );
+        }
+        JsfUtil.addSuccessMessage("Los datos el infante son : "
+                + "Codigo : " + temp.getCodigo() + "\n"
+                + "Nombre : " + temp.getNombre() + "\n"
+                + "Edad : " + temp.getEdad() + "\n"
+                + "Ciudad nacimiento : " + temp.getCiudadNacimiento() + "\n"
+        );
+
+    }
+
     public void habilitarFormulario() {
         deshabilitarFormulario = false;
         infante = new Infante();
@@ -376,15 +435,15 @@ public class SesionInfanteDE implements Serializable {
             JsfUtil.addErrorMessage(ex.getMessage());
         }
     }
-     public void PERDERPOS() throws InfanteExcepcion{
-      NodoDE nodo1,nodo2;
-      nodo2 = listaInfantes.getCabeza();
-      nodo1 = listaInfantes.getCabeza();
-          nodo1 = listaInfantes.buscar(infanteSeleccionado);
-          nodo2 = nodo1.getSiguiente();
-          Infante infTemporal = nodo1.getDato();
-          
-      
+
+    public void PERDERPOS() throws InfanteExcepcion {
+        NodoDE nodo1, nodo2;
+        nodo2 = listaInfantes.getCabeza();
+        nodo1 = listaInfantes.getCabeza();
+        nodo1 = listaInfantes.buscar(infanteSeleccionado);
+        nodo2 = nodo1.getSiguiente();
+        Infante infTemporal = nodo1.getDato();
+
     }
 
     public void enviarAlInicio() {
@@ -394,7 +453,7 @@ public class SesionInfanteDE implements Serializable {
             // Eliminar el nodo
             ayudante.setSiguiente(ayudante);
             listaInfantes.eliminarInfante(infanteSeleccionado);
-            
+
             // Adicionarlo al inicio
             listaInfantes.adicionarNodoAlInicio(infTemporal);
 
@@ -403,44 +462,30 @@ public class SesionInfanteDE implements Serializable {
             JsfUtil.addErrorMessage(ex.getMessage());
         }
     }
-    
-    
-    
-    
-    
-    
-    
-   
-    public void adelantar(NodoDE temp, int posAde)
-    {
-        int cont=0;
-        NodoDE tempA=temp;
-        
-        while((cont<posAde) && (tempA!=null))
-        {
-            tempA=temp;
-            cont++;
-        }
-        
-        if(tempA!=null)
-        {
-        tempA=temp.getSiguiente();
-        cont=0;
-        
-        NodoDE tempIn= new NodoDE(infante);
-        
-        while(cont<posAde)
-        {
-            tempIn.setDato(tempA.getDato());
-            tempA.setDato(temp.getDato());
-            temp.setDato(tempIn.getDato());
-            tempA=tempA.getSiguiente();
-            cont++;
-            
-            
-            
-        }
-        }
-}
-}
 
+    public void adelantar(NodoDE temp, int posAde) {
+        int cont = 0;
+        NodoDE tempA = temp;
+
+        while ((cont < posAde) && (tempA != null)) {
+            tempA = temp;
+            cont++;
+        }
+
+        if (tempA != null) {
+            tempA = temp.getSiguiente();
+            cont = 0;
+
+            NodoDE tempIn = new NodoDE(infante);
+
+            while (cont < posAde) {
+                tempIn.setDato(tempA.getDato());
+                tempA.setDato(temp.getDato());
+                temp.setDato(tempIn.getDato());
+                tempA = tempA.getSiguiente();
+                cont++;
+
+            }
+        }
+    }
+}

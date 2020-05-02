@@ -91,8 +91,7 @@
                                          action="#{sesionInfanteDE.invertirLista()}"
                                          />
                         
-                        <p:commandButton value="buscar infante de menor edad"/>
-                        <p:outputLabel value="#{sesionInfanteDE}" />
+                        
                         
                         
                         
@@ -107,6 +106,19 @@
                                              update="frmInfante"/>                           
 
                         </p:panelGrid>
+                        
+                        <p:outputLabel value="Código a buscar "/>
+                        <p:inputText value="#{sesionInfanteDE.codigoBuscar}"/>
+                        <p:commandButton value="buscar" action="#{sesionInfanteDE.buscarInfante()}"
+                                         update="frmInfante,:grwlErrores"
+                                         />
+                       <p:commandButton value="buscar infante de menor edad"/>
+                       <p:inputText value="#{sesionInfanteDE.pos}" />
+                       <br/>
+                       <p:commandButton value="Guardar en posicion" action="#{sesionInfanteDE.guardarInfantePos()}"
+                                         update="frmInfante,:grwlErrores"
+                                         />
+                        
                         <p:outputLabel value="Código a eliminar: "/>
                         <p:inputText value="#{sesionInfanteDE.codigoEliminar}" maxlength="4" size="10"/>
                         <p:commandButton value="Eliminar" action="#{sesionInfanteDE.eliminarInfante()}" 

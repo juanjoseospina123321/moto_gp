@@ -79,6 +79,8 @@ public class ListaDE implements Serializable{
         }
     }
     
+   
+   
        public short contarNodos()
     {
         if(cabeza ==null)
@@ -117,6 +119,84 @@ public class ListaDE implements Serializable{
        return aux;
       }
     
+      
+      
+      public Infante BuscarInfante(Short datob) {
+      
+        if (this.cabeza !=null) {
+           NodoDE temp = this.cabeza;
+            // comparacion de cadenas con equal
+            while ((temp != null) && (temp.getDato().getCodigo() != datob)) {
+                temp = temp.getSiguiente();
+
+            }//fin mientras
+            if (temp != null) {
+                return temp.getDato();
+            }
+        }
+        return null;
+      }
+       public int BuscarInfantePos(Short datob) {
+        boolean encontro = false;
+        int pos;
+        if (this.cabeza !=null) {
+           NodoDE temp = this.cabeza;
+           pos=1;
+            // comparacion de cadenas con equal
+            while ((temp != null) && (temp.getDato().getCodigo() != datob)) {
+                temp = temp.getSiguiente();
+                       pos++;
+               
+
+            }//fin mientras
+            if (temp != null) {
+                return pos;
+            }
+        }
+        return 0;
+      }
+       public int cantidad ()
+    {
+        int cant = 0;
+        NodoDE reco = this.cabeza;
+        while (reco != null) {
+            reco = reco.getSiguiente();
+            cant++;
+        }
+        return cant;
+    }
+        public void insertarPos (int pos, Infante x)
+    {
+        if (pos <= cantidad () + 1)    {
+            NodoDE nuevo = new NodoDE(x);
+           
+            if (pos == 1){
+                nuevo.setSiguiente(this.cabeza); 
+                if (this.cabeza!=null)
+                    
+                this.cabeza.setAnterior(nuevo);
+                this.cabeza = nuevo;
+            } else
+                if (pos == cantidad () + 1)    {
+                    NodoDE reco = this.cabeza;
+                    while (reco.getSiguiente() != null) {
+                        reco = reco.getSiguiente();
+                    }
+                    reco.setSiguiente(nuevo);
+                    nuevo.setAnterior(reco);
+                    nuevo.setSiguiente(null);
+                } else {
+                    NodoDE reco = this.cabeza;
+                    for (int f = 1 ; f <= pos - 2 ; f++)
+                        reco = reco.getSiguiente();
+                    NodoDE siguiente = reco.getSiguiente();
+                    reco.setSiguiente(nuevo) ;
+                    nuevo.setAnterior(reco);
+                    nuevo.setSiguiente(siguiente); 
+                    siguiente.setAnterior(nuevo);
+                }
+        }
+    }
     public String obtenerListadoInfantes()
     {
         
